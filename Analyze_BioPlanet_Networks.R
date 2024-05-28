@@ -606,6 +606,7 @@ EGFR.friends <- filter.edges.1(b, gzalltgene.physical.cfn.merged)
 mutual.friends <- intersect(extract.gene.names(glycolosis.friends), extract.gene.names(EGFR.friends))
 mutual.friends <- mutual.friends %w/o% c(a,b)
 # 85 mutual friends
+# 17 in dasat inhibited. 
 # Method to determine whether mutual friends connect to both pathways
 mutual.friends.cfn1 <- filter.edges.between(a, mutual.friends, gzalltgene.physical.cfn.merged)
 mutual.friends.cfn2 <- filter.edges.between(b, mutual.friends, gzalltgene.physical.cfn.merged)
