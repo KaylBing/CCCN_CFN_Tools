@@ -1,0 +1,11 @@
+This file covers the setup process for this code. As stated in the README file, the easiest way to reproduce this enviroment
+is using the provided .yml file, and to use Anaconda, Miniconda, or a similar alternative. If you need to install one of
+these, I would start by looking here https://docs.anaconda.com/anaconda/install/. Once you have them, create a new enviroment
+using the command below.
+
+>conda env create -f PTM_Pipeline.yml
+
+This creates an isolated and reproducable enviroment for you to work. It also scales well for HPCs and other more niche
+Unix enviroments. Use the conda activate command to summon your new workspace. Below is a brief summary of each function,
+what it does, and a few different use cases that you may find helpful. These notes are also available by using the man
+command, followed by the command that you want to know more about. 
