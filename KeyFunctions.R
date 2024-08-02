@@ -1,5 +1,5 @@
 # This file holds our commonly used functions #
-# A few of them are paralleled, but not all #
+# A few of them run in parallel, but not all #
 library(Rtsne)
 library(parallel)
 library(foreach)
@@ -9,6 +9,7 @@ library(plyr)
 library(igraph)
 require(vegan)
 library(STRINGdb)
+library(dplyr)
 load("~/Code/PTMs_New/EnvFile.RData") # Temp for the time being #
 # Example use case instead of the library commands #
 # Rtsne::Rtsne()
@@ -521,6 +522,38 @@ process_ptms_data <- function(eu.sp.sed.allptms, sed.allptms.peps, AlldataPTMs_c
   
   return(allptms_gene_cccn_edges)
 }
-#process_ptms_data(eu.sp.sed.allptms, sed.allptms.peps, allptmtable.cor)
 
-#Find_edges <- function()
+#' Title
+#'
+#' @param input_dataset 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+find_ppi_edges <- function(input_dataset) { # Would be the allptms_gene_cccn_edges for input #
+	# Initialize the STRING database object #
+	string_db <- STRINGdb$new( version="12.0", species=9606, score_threshold=0, link_data="detailed", input_directory="")
+
+	# Retrieve the proteins from the STRING database #
+	string_proteins <- string_db$get_proteins()
+
+	# Check the dimensions of the retrieved proteins #
+	print(dim(string_proteins))  # Expected output: 19566 4
+
+	# Read the dataset that you want to combine with the STRING database #
+	filter_db <- read.table(input_dataset, header = TRUE, sep = "")
+
+	# Check the column names of filter_db #
+	print(colnames(filter_db))
+	mapped_genes <- string_db$map(filter_db, "experimental", removeUnmappedRows = TRUE)
+
+	# Print the mapped genes to check #
+	print(head(mapped_genes))
+
+	# Retrieve the interactions for the mapped genes #
+	interactions <- string_db$get_interactions(mapped_genes$STRING_id)
+
+	# Potentially more code to go here #
+	return(interactions)
+} 
