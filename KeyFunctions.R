@@ -11,6 +11,7 @@ require(vegan)
 library(STRINGdb)
 library(dplyr)
 load("~/Code/PTMs_New/EnvFile.RData") # Temp for the time being #
+#load("~/Code/PTMs_New/PTM_CCCN_CFN_Package/PPIEdges.RData") # Also temp, for testing #
 # Example use case instead of the library commands #
 # Rtsne::Rtsne()
 
@@ -523,37 +524,82 @@ process_ptms_data <- function(eu.sp.sed.allptms, sed.allptms.peps, AlldataPTMs_c
   return(allptms_gene_cccn_edges)
 }
 
-#' Title
-#'
-#' @param input_dataset 
-#'
-#' @return
-#' @export
-#'
-#' @examples
-find_ppi_edges <- function(input_dataset) { # Would be the allptms_gene_cccn_edges for input #
-	# Initialize the STRING database object #
-	string_db <- STRINGdb$new( version="12.0", species=9606, score_threshold=0, link_data="detailed", input_directory="")
 
-	# Retrieve the proteins from the STRING database #
-	string_proteins <- string_db$get_proteins()
+get.gene.names.from.peps <- function(pepvec, pepsep="; ") {
+  genevec=NULL
+  for(i in 1:length(pepvec)) {
+    x <- unlist(strsplit(as.character(pepvec[i]), pepsep, fixed=TRUE))
+    genes <- unique(sapply(as.character(x),  function (x) unlist(strsplit(x, " ",  fixed=TRUE))[1]))
+    genevec <- c(genevec, genes)
+  }
+  return(genevec)
+}
 
-	# Check the dimensions of the retrieved proteins #
-	print(dim(string_proteins))  # Expected output: 19566 4
+find_ppi_edges <- function(input_dataset) {
+  # Initialize the STRING database object
+  string_db <- STRINGdb$new(version="12.0", species=9606, score_threshold=0, link_data="detailed", input_directory="")
+  
+  # Retrieve the proteins from the STRING database
+  string_proteins <- string_db$get_proteins()
+  
+  # Check the dimensions of the retrieved proteins
+  print(dim(string_proteins))  # Expected output: 19566 4
+  
+  # Read the dataset that you want to combine with the STRING database
+  filter_db <- read.table(input_dataset, header = TRUE, sep = "\t")  # Adjust sep as needed
+  
+  # Check the column names of filter_db
+  print(colnames(filter_db))
+  
+  # Ensure the 'experimental' column exists in filter_db, or adjust the column name accordingly
+  if (!"experimental" %in% colnames(filter_db)) {
+    stop("Column 'experimental' not found in input dataset.")
+  }
+  
+  # Map the genes to STRING IDs
+  mapped_genes <- string_db$map(filter_db, "experimental", removeUnmappedRows = TRUE)
+  
+  # Print the mapped genes to check
+  print(head(mapped_genes))
+  
+  # Retrieve the interactions for the mapped genes
+  interactions <- string_db$get_interactions(mapped_genes$STRING_id)
+  
+  # Convert protein IDs to gene names
+  interactions$Gene.1 <- sapply(interactions$from, function(x) string_proteins[match(x, string_proteins$protein_external_id), "preferred_name"])
+  interactions$Gene.2 <- sapply(interactions$to, function(x) string_proteins[match(x, string_proteins$protein_external_id), "preferred_name"])
+  
+  # Filter interactions based on evidence types
+  str.e <- interactions[interactions$experiments > 0, ]
+  str.et <- interactions[interactions$experiments_transferred > 0, ]
+  str.d <- interactions[interactions$database > 0, ]
+  str.dt <- interactions[interactions$database_transferred > 0, ]
+  
+  # Combine filtered interactions
+  combined_interactions <- unique(rbind(str.e, str.et, str.d, str.dt))
+  
+  # Assign edge types
+  combined_interactions$edgeType <- "STRINGdb"
+  combined_interactions[combined_interactions$database > 0, "edgeType"] <- "database"
+  combined_interactions[combined_interactions$database_transferred > 0, "edgeType"] <- "database"
+  combined_interactions[combined_interactions$experiments > 0, "edgeType"] <- "experiments"
+  combined_interactions[combined_interactions$experiments_transferred > 0, "edgeType"] <- "experiments"
+  
+  # Calculate weights
+  combined_interactions$Weight <- rowSums(combined_interactions[, c("experiments", "experiments_transferred", "database", "database_transferred")])
+  
+  # Scale weights
+  combined_interactions$Weight <- combined_interactions$Weight / 1000  # Check if scaling factor is appropriate
+  
+  # Create the final edges dataframe
+  combined_edges <- combined_interactions[, c("Gene.1", "Gene.2", "Weight", "edgeType")]
+  
+  # Return the final edges
+  return(combined_edges)
+}
 
-	# Read the dataset that you want to combine with the STRING database #
-	filter_db <- read.table(input_dataset, header = TRUE, sep = "")
+# Temp for testing #
+processed_data_path <- process_ptms_data(eu.sp.sed.allptms, sed.allptms.peps, AlldataPTMs_cor)
+ppi_edges <- find_ppi_edges(processed_data_path)
+print(head(ppi_edges))
 
-	# Check the column names of filter_db #
-	print(colnames(filter_db))
-	mapped_genes <- string_db$map(filter_db, "experimental", removeUnmappedRows = TRUE)
-
-	# Print the mapped genes to check #
-	print(head(mapped_genes))
-
-	# Retrieve the interactions for the mapped genes #
-	interactions <- string_db$get_interactions(mapped_genes$STRING_id)
-
-	# Potentially more code to go here #
-	return(interactions)
-} 
