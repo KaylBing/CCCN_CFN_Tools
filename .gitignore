@@ -1,5 +1,3 @@
-interactions.txt
-tsne_coordinates.rds
-spearman_result.rds
-.Rhistory       
-PPIEdges.RData     
+.Rbuildignore
+.Rproj.user
+.Rhistory

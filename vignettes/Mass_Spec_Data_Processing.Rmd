@@ -1,0 +1,50 @@
+---
+title: "Mass Spectrometry Pre-Processing Guide"
+author: "Nagashree A, McKayl Bailey"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: cosmo
+    highlight: tango
+vignette:
+  VignetteIndexEntry: "Mass_Spec_Data_Processing"
+  VignetteEngine: "knitr::rmarkdown"
+  VignetteEncoding: "UTF-8"
+---
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 8,
+  fig.height = 6,
+  out.width = "100%"
+)
+```
+
+
+This is a step-by-step guide on using the first twelve functions of the CCCN CFN Tools package. First, there are brief descriptions of each of each function, followed by a quick look at our sample data set. After that, you will be running the functions through the Rmd page itself. Please note that certain parts of this can take up to an hour to run.
+
+(Potential Notes here about needed hardware and OS requirements. Function names can also be changed as needed.)
+
+### Spearman Dissimilarity:
+This function takes a data frame, converts its values to numeric, and computes the Spearman correlation matrix from the transposed data using pairwise completion to handle missing values. It then calculates the dissimilarity by subtracting the absolute values of the correlation matrix from one. Any remaining missing values are replaced with the maximum dissimilarity. Finally, it uses t-SNE, a method that reduces the dimensions of the data to 3D while preserving its structure, to make it easier to visualize and explore the data. The function returns the 3D coordinates for plotting.
+
+### Euclidean Distance:
+This function takes a data frame, computes the Euclidean distance matrix, and normalizes it by scaling distances to a range of 0 to 100. It handles missing values by replacing them with a value 100 times the maximum distance. It then also uses t-SNE to return 3D coordinates. 
+
+### Combined Parallel:
+A utility function that runs both Euclidean Distance and Spearman Dissimilarity at the same time. With each one on their own CPU core. This is the most common way to actually call these functions, and is aimed at reducing the run time, and the need for redundant function calls. This function also finds the average between the two lists for use later on.
+
+### Make Cluster List:
+Performs clustering analysis on t-SNE data. It takes your coordinate data, an argument for cluster closeness, and a table with the original gene labels as arguments. It then calculates a spanning tree based on the distances in the t-SNE data and identifies clusters by computing connected components with the specified threshold. Finally, it returns a list of data frames, each containing the genes assigned to a specific cluster.
+
+### Find Common Clusters:
+Takes the three arguments from the Combined Parallel Function (Euclidean, Spearman, and average), and uses Make Cluster List to print out an actual graph.
+
+### List Common:
+This looks for actual interactions and similarities between the new clusters for each of the results. It returns a new list within the given parameters. 
+
+### Generate and Construct PTMs Network:
+
