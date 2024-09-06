@@ -28,6 +28,9 @@ This is a step-by-step guide on using the first twelve functions of the CCCN CFN
 
 (Potential Notes here about needed hardware and OS requirements. Function names can also be changed as needed.)
 
+# Function Descriptions
+
+
 ### Spearman Dissimilarity:
 This function takes a data frame, converts its values to numeric, and computes the Spearman correlation matrix from the transposed data using pairwise completion to handle missing values. It then calculates the dissimilarity by subtracting the absolute values of the correlation matrix from one. Any remaining missing values are replaced with the maximum dissimilarity. Finally, it uses t-SNE, a method that reduces the dimensions of the data to 3D while preserving its structure, to make it easier to visualize and explore the data. The function returns the 3D coordinates for plotting.
 
@@ -47,4 +50,10 @@ Takes the three arguments from the Combined Parallel Function (Euclidean, Spearm
 This looks for actual interactions and similarities between the new clusters for each of the results. It returns a new list within the given parameters. 
 
 ### Generate and Construct PTMs Network:
+The new cluster lists from above are used here to look for Post-Translational Modifications. It then merges these separate data frames for each cluster list into a single data frame. This function also goes through and changes non-existent values from 0 to NA so that they do not skew our results later on.
 
+### Extract Peptides from Cluster List:
+
+
+
+# Example Usages
