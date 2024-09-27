@@ -24,7 +24,7 @@ knitr::opts_chunk$set(
 ```
 
 
-This is a step-by-step guide on using the first twelve functions of the CCCN CFN Tools package. First, there are brief descriptions of each of each function, followed by a quick look at our sample data set. After that, you will be running the functions through the Rmd page itself. Please note that certain parts of this can take up to an hour to run.
+This is a step-by-step guide on using the first twelve functions of the CCCN CFN Tools package. First, there are brief descriptions of each function, followed by an in depth look at actually running them. Please note that certain parts of this can take up to an hour to run.
 
 (Potential Notes here about needed hardware and OS requirements. Function names can also be changed as needed.)
 
@@ -46,14 +46,87 @@ Performs clustering analysis on t-SNE data. It takes your coordinate data, an ar
 ### Find Common Clusters:
 Takes the three arguments from the Combined Parallel Function (Euclidean, Spearman, and average), and uses Make Cluster List to print out an actual graph.
 
-### List Common:
-This looks for actual interactions and similarities between the new clusters for each of the results. It returns a new list within the given parameters. 
+### List Common Cluster:
+This looks for actual interactions and similarities between the new clusters for each of the results. It returns a new list within the given parameters.
 
 ### Generate and Construct PTMs Network:
-The new cluster lists from above are used here to look for Post-Translational Modifications. It then merges these separate data frames for each cluster list into a single data frame. This function also goes through and changes non-existent values from 0 to NA so that they do not skew our results later on.
+The new cluster lists from above are used here to look for Post-Translational Modifications. It then merges these separate data frames for each cluster list into a single data frame. This function also goes through and changes non-existent values from 0 to NA so that they do not skew our results later on. There are also a number of secondary functions inside of this that could be used for adapting your own code.
 
-### Extract Peptides from Cluster List:
+### Make Adjecancy Matrix:
+A fairly self explanatory function. This creates a matrix from your chosen data sets by combining them.
+
+### Bind Matricies
+Aligns the adjacency matrix with the correlation matrix. Then sets diagonal connections to NA values.
+
+### Correlation Network
+Turns the matrix created into an igraph object.
+
+### Process PTM Data
+
+### Get Gene Names from Peptides
 
 
 
-# Example Usages
+### Example Pipeline
+
+These steps will take the unprocessed data set that we provide on GitHub and sort and filter it in several ways. Depending on your individual situation, you may want to only use some of these functions. We will run them sequentially so that you have example uses of each. The code snippets below will each be followed by descriptions. You can copy them into your own file or follow along by running the `PipelineMain.R` file.
+
+For actually running this code, it is recommended that you have at least four CPU cores and 16 GB of memory (RAM).
+
+---
+
+#### Step 1: CombinedPar Function to Calculate Combined Distances and t-SNE
+
+```{r eval=FALSE}
+combined_data <- CombinedPar(allptmtable.df, allptmtable)
+print("Combined data:")
+print(combined_data)
+
+```
+
+The CombinedPar function is designed to analyze your data by calculating two types of distances (Spearman Dissimilarity and Euclidean Distance) simultaneously. By utilizing separate CPU cores, this function helps reduce processing time, making your analysis more efficient. Here, allptmtable.df is your data frame containing the mass spectrometry data, while allptmtable refers to the labels or additional information relevant to your data. The result, combined_data, contains the processed output that will be used in the next steps. Printing the result helps you verify that the function has run correctly.
+
+#### Step 2: MakeClusterList
+```{r eval=FALSE}
+cluster_list <- MakeClusterList(combined_data)
+print("Cluster list:")
+print(cluster_list)
+```
+
+After obtaining the combined data from the previous step, the MakeClusterList function is employed to identify clusters within your dataset. Clustering is an important step in data analysis, allowing you to group similar observations (in this case, genes) based on their characteristics. This helps in understanding relationships in the data. The output, cluster_list, will show which genes are grouped together, enabling you to see how they relate to each other visually in the next steps. Important Note: Avoid altering the output files' data types, as this can affect subsequent analyses.
+
+#### Step 3: FindCommonCluster
+```{r eval=FALSE}
+common_clusters <- FindCommonCluster(cluster_list)
+print("Common clusters:")
+print(common_clusters)
+```
+
+This step uses the output from the MakeClusterList function to find common clusters among your data. The FindCommonCluster function analyzes the cluster list and generates a visual graph that represents the relationships among the clusters. This graph is particularly useful for visualizing how different gene clusters overlap, providing insights into biological similarities.
+
+#### Step 4: GenerateAndConstructAllptmsNetwork
+```{r eval=FALSE}
+allptms_network <- GenerateAndConstructAllptmsNetwork(common_clusters)
+print("All PTMs network:")
+print(allptms_network)
+```
+
+In this step, the GenerateAndConstructAllptmsNetwork function takes the common clusters you identified in the previous step to create a network of Post-Translational Modifications (PTMs). PTMs are chemical modifications that occur after a protein is produced, and understanding these modifications is crucial for many biological processes. The function merges the cluster data into a single comprehensive data frame, preparing it for further analysis. This step is essential for connecting the dots between different protein modifications.
+
+#### Step 5: BindMatrices
+``` {r eval=FALSE}
+bound_matrices <- BindMatrices(allptms_network)
+print("Bound matrices:")
+print(bound_matrices)
+```
+
+The BindMatrices function aligns the adjacency matrix (which represents the relationships between different entities) with the correlation matrix (which indicates how closely related different observations are). By setting diagonal connections to NA, this function helps clean up the data and ensures that only relevant relationships are analyzed.
+
+#### Step 6: CorrelationNetwork
+```{r eval=FALSE}
+correlation_network <- CorrelationNetwork(bound_matrices)
+print("Correlation network:")
+print(correlation_network)
+```
+
+Finally, the CorrelationNetwork function takes the bound matrices and transforms them into an igraph object. This object represents a network where nodes correspond to genes or proteins, and edges represent relationships between them. Analyzing this correlation network allows you to understand the complex interactions between different proteins in your dataset, offering insights into their functional relationships.
