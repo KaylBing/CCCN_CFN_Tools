@@ -55,19 +55,19 @@ The new cluster lists from above are used here to look for Post-Translational Mo
 ### Make Adjecancy Matrix:
 A fairly self explanatory function. This creates a matrix from your chosen data sets by combining them.
 
-### Bind Matricies
+### Bind Matricies:
 Aligns the adjacency matrix with the correlation matrix. Then sets diagonal connections to NA values.
 
-### Correlation Network
+### Correlation Network:
 Turns the matrix created into an igraph object.
 
-### Process PTM Data
+### Process PTM Data:
 
-### Get Gene Names from Peptides
+### Get Gene Names from Peptides:
 
 
 
-### Example Pipeline
+### Example Pipeline:
 
 These steps will take the unprocessed data set that we provide on GitHub and sort and filter it in several ways. Depending on your individual situation, you may want to only use some of these functions. We will run them sequentially so that you have example uses of each. The code snippets below will each be followed by descriptions. You can copy them into your own file or follow along by running the `PipelineMain.R` file.
 
@@ -130,3 +130,21 @@ print(correlation_network)
 ```
 
 Finally, the CorrelationNetwork function takes the bound matrices and transforms them into an igraph object. This object represents a network where nodes correspond to genes or proteins, and edges represent relationships between them. Analyzing this correlation network allows you to understand the complex interactions between different proteins in your dataset, offering insights into their functional relationships.
+
+#### Step 7: Purge Zeros
+```{r eval=FALSE}
+zero_na_data <- zero.to.NA(correlation_network)
+print("Data with zeroes replaced by NA:")
+print(zero_na_data)
+```
+
+This function, which is smaller than most of ours, is just turning every zero in the given data set to an NA value. This is so that later on these missing numbers to not affect our workflow. 
+
+#### Step 8: Process PTM Data
+```{r eval=FALSE}
+processed_data_path <- process_ptms_data(eu.sp.sed.allptms, sed.allptms.peps, cccn_matrix)
+print("Processed PTM data:")
+print(processed_data_path)
+```
+
+Once again we run this function in the same manner as the others. This function has more steps than most of the others. It creates an adjacency matrix based on the Euclidean, Spearman, and combined data sets, and sorts them based on their values. Then, it checks the data set and adds correlation as edge values in the adjacency matrix.

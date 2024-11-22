@@ -544,25 +544,18 @@ find_ppi_edges <- function(input_dataset, gmfilename, nodenames) {
 
   # Retrieve the proteins from the STRING database
   string_proteins <- string_db$get_proteins()
-
-  # Check the dimensions of the retrieved proteins
-  print(dim(string_proteins))  # Expected output: 19566 4
+  print(dim(string_proteins))
 
   # Read the dataset that you want to combine with the STRING database
-  filter_db <- read.table(input_dataset, header = TRUE, sep = "\t")  # Adjust sep as needed
-
-  # Check the column names of filter_db
+  filter_db <- read.table(input_dataset, header = TRUE, sep = "\t")
   print(colnames(filter_db))
 
-  # Ensure the 'experimental' column exists in filter_db, or adjust the column name accordingly
   if (!"experimental" %in% colnames(filter_db)) {
     stop("Column 'experimental' not found in input dataset.")
   }
 
   # Map the genes to STRING IDs
   mapped_genes <- string_db$map(filter_db, "experimental", removeUnmappedRows = TRUE)
-
-  # Print the mapped genes to check
   print(head(mapped_genes))
 
   # Retrieve the interactions for the mapped genes
@@ -590,9 +583,7 @@ find_ppi_edges <- function(input_dataset, gmfilename, nodenames) {
 
   # Calculate weights
   combined_interactions$Weight <- rowSums(combined_interactions[, c("experiments", "experiments_transferred", "database", "database_transferred")])
-
-  # Scale weights
-  combined_interactions$Weight <- combined_interactions$Weight / 1000  # Check if scaling factor is appropriate
+  combined_interactions$Weight <- combined_interactions$Weight / 1000
 
   # Create the final edges dataframe from STRINGdb
   combined_edges <- combined_interactions[, c("Gene.1", "Gene.2", "Weight", "edgeType")]
@@ -603,11 +594,5 @@ find_ppi_edges <- function(input_dataset, gmfilename, nodenames) {
   # Combine STRINGdb and GeneMANIA edges
   final_edges <- rbind(combined_edges, gm_edges)
 
-  # Return the final combined edges
   return(final_edges)
 }
-
-# Temp test for function #
-#find_ppi_edges()
-
-CombinedPar(allptmtable.df, allptmtable)
