@@ -1,10 +1,10 @@
 Package: cccn.cfn.tools
-Title: What the Package Does (One Line, Title Case)
+Title: A package for mass spec data processing
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
+    person("Mckayl", "Bailey", , "first.last@example.com", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: Multiple seperate functions for processing mass spec data into usable and interactive data structures
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8
