@@ -41,16 +41,17 @@ SpearmanDissimilarity <- function(allptmtable) {
     return(tsne_results$Y)
 }
 
-#' Calculates Euclidean Distance between
+#' Calculates Euclidean distance and performs t-SNE
 #'
-#' @param
-#'Post translation modification data frame
-#' @return
-#' TSNE Euclidean Distance
+#' This function computes the Euclidean distance matrix from the input dataset,
+#' normalizes it, and applies t-SNE for dimensionality reduction.
+#'
+#' @param allptmtable.df A data frame containing numeric data for post-translational modifications.
+#' @return A matrix containing t-SNE coordinates (3D).
 #' @export
 #'
 #' @examples
-#' (EuclideanDistance(allptmtable.df)
+#' EuclideanDistance(allptmtable.df)
 EuclideanDistance <- function(allptmtable.df) {
     # Add if statement here to make sure functions are formatted correctly #
     # Convert the dataframe to a distance matrix using Euclidean distance #
@@ -83,12 +84,14 @@ EuclideanDistance <- function(allptmtable.df) {
     return(eu.allptms.tsne)
 }
 
-#' Finds the difference between Euclidean Distance and Spearman Dissimilarity
+#' Combines Spearman dissimilarity and Euclidean distance in parallel
 #'
-#' @param
-#' PTM data set & data frame
-#' @return
-#' TSNE coordinates
+#' This function uses parallel computing to calculate both Spearman dissimilarity and
+#' Euclidean distance, combines them, and performs t-SNE.
+#'
+#' @param allptmtable.df A data frame containing numeric data.
+#' @param allptmtable A dataset for post-translational modifications.
+#' @return A matrix containing t-SNE coordinates (3D).
 #' @export
 #'
 #' @examples
@@ -132,15 +135,19 @@ CombinedPar <- function(allptmtable.df, allptmtable) {
     return(tsne_coordinates)
 }
 
-#' Makes a list of cluster groupings
+#' Creates a list of cluster groupings based on t-SNE data
 #'
-#' @param
-#' TSNE Data, Cluster Distance Number, TBD
-#' @return
-#' TSNE list (filtered)
+#' This function groups t-SNE data points into clusters using a specified threshold
+#' and visualizes the clusters.
+#'
+#' @param tsnedata A matrix containing t-SNE coordinates.
+#' @param toolong A numeric threshold for cluster separation.
+#' @param tbl.sc A data frame associated with the t-SNE data.
+#' @return A list of clusters grouped by proximity.
 #' @export
 #'
 #' @examples
+#' MakeClusterList(tsnedata, 3.5, tbl.sc)
 MakeClusterList <- function(tsnedata, toolong, tbl.sc)	{ # Run for all three not just one
     toolong = 3.5
     tsne.span2 <- spantree(dist(tsnedata), toolong=toolong)
@@ -157,18 +164,22 @@ MakeClusterList <- function(tsnedata, toolong, tbl.sc)	{ # Run for all three not
     return(tsnedata.span2.list)
 }
 
-#' Finds correlations between clusters
+#' Finds correlations between clusters from multiple distance metrics
 #'
-#' @param eu_allptms_tsne
-#' @param sp_allptms_tsne
-#' @param sed_allptms_tsne
-#' @param allptmtable_df
-#' @param output_dir
+#' This function identifies and analyzes clusters using Spearman, Euclidean, and combined
+#' t-SNE data, generates cluster size histograms, and saves the plots.
 #'
-#' @return list(eu_allptms_list = eu_allptms_list, sp_allptms_list = sp_allptms_list, sed_allptms_list = sed_allptms_list
+#' @param eu_allptms_tsne A matrix containing Euclidean t-SNE coordinates.
+#' @param sp_allptms_tsne A matrix containing Spearman t-SNE coordinates.
+#' @param sed_allptms_tsne A matrix containing combined t-SNE coordinates.
+#' @param allptmtable_df A data frame containing input data for cluster analysis.
+#' @param output_dir The directory where output plots are saved. Defaults to "plots".
+#' @return A list containing cluster groupings for each distance metric.
 #' @export
 #'
 #' @examples
+#' FindCommonCluster(eu_allptms_tsne, sp_allptms_tsne, sed_allptms_tsne, allptmtable_df, "output")
+
 FindCommonCluster <- function(eu_allptms_tsne, sp_allptms_tsne, sed_allptms_tsne, allptmtable_df, output_dir = "plots") {
     if (!exists("MakeClusterList")) {
         stop("The function 'MakeClusterList' is not defined.")
@@ -214,7 +225,17 @@ FindCommonCluster <- function(eu_allptms_tsne, sp_allptms_tsne, sed_allptms_tsne
                 sed_allptms_list = sed_allptms_list))
 }
 
-# Helper function to find intersections of clusters #
+
+# Helper function to find intersections of clusters
+#'
+#' Finds common elements between clusters in two lists.
+#'
+#' @param list1 A list of clusters.
+#' @param list2 A list of clusters to compare against.
+#' @param keeplength Minimum size of intersections to keep.
+#' @return A list of common clusters.
+#' @examples
+#' list.common(cluster_list1, cluster_list2, keeplength = 3)
 list.common <- function(list1, list2, keeplength = 3) {
   parse <- lapply(list1, function(y) sapply(list2, function(x) intersect(x, y)))
   dims <- lapply(parse, function(x) sapply(x, length))
@@ -225,20 +246,23 @@ list.common <- function(list1, list2, keeplength = 3) {
   return(newlist)
 }
 
-# Made into one function instead of two, so that the user has less to manage #
-#' Title
+#' Generate and Construct All PTMs Network
 #'
-#' @param eu.allptms.list
-#' @param sp.allptms.list
-#' @param sed.allptms.list
-#' @param allptmtable.df
-#' @param keeplength
-#' @param output_dir
+#' This function generates and constructs the PTMs network from given data lists and tables.
 #'
-#' @return
+#' @param eu.allptms.list A list containing all PTMs data for the European dataset.
+#' @param sp.allptms.list A list containing all PTMs data for the SP dataset.
+#' @param sed.allptms.list A list containing all PTMs data for the SED dataset.
+#' @param allptmtable.df A data frame containing all PTMs data.
+#' @param keeplength An integer specifying the minimum length of common elements to keep. Default is 2.
+#' @param output_dir A string specifying the output directory for saving plots. Default is "plots".
+#'
+#' @return A list containing the updated `allptmtable.df` and data for `eu.sp.sed.allptms`.
 #' @export
 #'
 #' @examples
+#' GenerateAndConstructAllptmsNetwork(eu.allptms.list, sp.allptms.list, sed.allptms.list, allptmtable.df)
+
 GenerateAndConstructAllptmsNetwork <- function(eu.allptms.list, sp.allptms.list, sed.allptms.list,
                                                allptmtable.df, keeplength = 2, output_dir = "plots") {
   # Create output directory if it doesn't exist
@@ -347,14 +371,17 @@ GenerateAndConstructAllptmsNetwork <- function(eu.allptms.list, sp.allptms.list,
   return(list(allptmtable.df = allptmtable.df, eu.sp.sed.allptms.data = eu.sp.sed.allptms.data))
 }
 
-#' Creates an adjacency matrix from the given data set
+#' Create Adjacency Matrix
 #'
-#' @param list.element
+#' This function creates an adjacency matrix for a given list element.
 #'
-#' @return list.el.mat
+#' @param list.element A list of elements to construct the adjacency matrix.
+#'
+#' @return A square matrix where rows and columns correspond to the input list elements.
 #' @export
 #'
 #' @examples
+#' MakeAdjMatrix(c("A", "B", "C"))
 MakeAdjMatrix <- function(list.element) {
   list.el.mat <- matrix(1, nrow = length(list.element), ncol = length(list.element))
   rownames(list.el.mat) <- list.element
