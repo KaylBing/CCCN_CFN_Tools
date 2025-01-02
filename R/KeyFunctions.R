@@ -1,38 +1,14 @@
-# This file holds our commonly used functions #
-# A few of them run in parallel, but not all #
-library(Rtsne)
-library(parallel)
-library(foreach)
-library(doParallel)
-library(rgl)
-library(plyr)
-library(igraph)
-require(vegan)
-library(STRINGdb)
-library(dplyr)
-load("~/Code/PTMs_New/EnvFile.RData") # Temp for the time being #
-#load("~/Code/PTMs_New/PTM_CCCN_CFN_Package/PPIEdges.RData") # Also temp, for testing #
-# Example use case instead of the library commands #
-# Rtsne::Rtsne()
-
-# This loads your data, please change the file path to reflect your own dataset #
-AlldataPTMs <- read.delim("/home/mikhail/Code/PTMs_New/AlldataPTMs.txt", header = TRUE, sep = "\t")
-
-# I tried moving this into the functions, however it broke the combined one, potentially will make this into a format data function #
-allptmtable <- AlldataPTMs
-allptmtable.df <- allptmtable[, 2:ncol(allptmtable)]
-rownames(allptmtable.df) <- allptmtable$PTM
-
-#' Calculates Spearman dissimilarity and t-SNE from a given data set
+#' Calculates Spearman dissimilarity and t-SNE from a given dataset
 #'
-#' @param
-#'Post translation modifications table
-#' @return
-#' Spearman Dissimilarity
+#' This function computes the Spearman dissimilarity matrix from the input dataset,
+#' processes it for missing values, and performs t-SNE for dimensionality reduction.
+#'
+#' @param allptmtable A data frame containing numeric data for post-translational modifications.
+#' @return A matrix containing t-SNE coordinates (3D).
 #' @export
 #'
 #' @examples
-#' (SpearmanDissimilarity(allptmtable)
+#' SpearmanDissimilarity(allptmtable)
 SpearmanDissimilarity <- function(allptmtable) {
     # Add if statement here to make sure functions are formatted correctly #
     # Ensure allptmtable is a data frame with numeric values #
