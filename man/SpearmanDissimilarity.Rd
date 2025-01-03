@@ -2,19 +2,20 @@
 % Please edit documentation in R/KeyFunctions.R
 \name{SpearmanDissimilarity}
 \alias{SpearmanDissimilarity}
-\title{Calculates Spearman dissimilarity and t-SNE from a given data set}
+\title{Calculates Spearman dissimilarity and t-SNE from a given dataset}
 \usage{
 SpearmanDissimilarity(allptmtable)
 }
 \arguments{
-\item{Post}{translation modifications table}
+\item{allptmtable}{A data frame containing numeric data for post-translational modifications.}
 }
 \value{
-Spearman Dissimilarity
+A matrix containing t-SNE coordinates (3D).
 }
 \description{
-Calculates Spearman dissimilarity and t-SNE from a given data set
+This function computes the Spearman dissimilarity matrix from the input dataset,
+processes it for missing values, and performs t-SNE for dimensionality reduction.
 }
 \examples{
-(SpearmanDissimilarity(allptmtable)
+SpearmanDissimilarity(allptmtable)
 }

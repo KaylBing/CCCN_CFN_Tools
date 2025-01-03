@@ -2,7 +2,7 @@
 % Please edit documentation in R/KeyFunctions.R
 \name{GenerateAndConstructAllptmsNetwork}
 \alias{GenerateAndConstructAllptmsNetwork}
-\title{Title}
+\title{Generate and Construct All PTMs Network}
 \usage{
 GenerateAndConstructAllptmsNetwork(
   eu.allptms.list,
@@ -14,8 +14,24 @@ GenerateAndConstructAllptmsNetwork(
 )
 }
 \arguments{
-\item{output_dir}{}
+\item{eu.allptms.list}{A list containing all PTMs data for the European dataset.}
+
+\item{sp.allptms.list}{A list containing all PTMs data for the SP dataset.}
+
+\item{sed.allptms.list}{A list containing all PTMs data for the SED dataset.}
+
+\item{allptmtable.df}{A data frame containing all PTMs data.}
+
+\item{keeplength}{An integer specifying the minimum length of common elements to keep. Default is 2.}
+
+\item{output_dir}{A string specifying the output directory for saving plots. Default is "plots".}
+}
+\value{
+A list containing the updated \code{allptmtable.df} and data for \code{eu.sp.sed.allptms}.
 }
 \description{
-Title
+This function generates and constructs the PTMs network from given data lists and tables.
+}
+\examples{
+GenerateAndConstructAllptmsNetwork(eu.allptms.list, sp.allptms.list, sed.allptms.list, allptmtable.df)
 }

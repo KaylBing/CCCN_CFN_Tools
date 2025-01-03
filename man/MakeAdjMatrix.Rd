@@ -2,16 +2,19 @@
 % Please edit documentation in R/KeyFunctions.R
 \name{MakeAdjMatrix}
 \alias{MakeAdjMatrix}
-\title{Creates an adjacency matrix from the given data set}
+\title{Create Adjacency Matrix}
 \usage{
 MakeAdjMatrix(list.element)
 }
 \arguments{
-\item{list.element}{}
+\item{list.element}{A list of elements to construct the adjacency matrix.}
 }
 \value{
-list.el.mat
+A square matrix where rows and columns correspond to the input list elements.
 }
 \description{
-Creates an adjacency matrix from the given data set
+This function creates an adjacency matrix for a given list element.
+}
+\examples{
+MakeAdjMatrix(c("A", "B", "C"))
 }

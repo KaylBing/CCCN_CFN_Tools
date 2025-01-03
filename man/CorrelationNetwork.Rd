@@ -2,13 +2,19 @@
 % Please edit documentation in R/KeyFunctions.R
 \name{CorrelationNetwork}
 \alias{CorrelationNetwork}
-\title{Function to create a correlation network}
+\title{Generate Correlation Network}
 \usage{
 CorrelationNetwork(bind_result)
 }
 \arguments{
-\item{bind_result}{}
+\item{bind_result}{A list containing the adjacency and CCCN matrices from \code{BindMatrices}.}
+}
+\value{
+An igraph object representing the correlation network.
 }
 \description{
-Function to create a correlation network
+This function creates a correlation network graph from a given set of matrices.
+}
+\examples{
+CorrelationNetwork(bind_result)
 }

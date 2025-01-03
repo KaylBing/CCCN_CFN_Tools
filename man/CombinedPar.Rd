@@ -2,18 +2,21 @@
 % Please edit documentation in R/KeyFunctions.R
 \name{CombinedPar}
 \alias{CombinedPar}
-\title{Finds the difference between Euclidean Distance and Spearman Dissimilarity}
+\title{Combines Spearman dissimilarity and Euclidean distance in parallel}
 \usage{
 CombinedPar(allptmtable.df, allptmtable)
 }
 \arguments{
-\item{PTM}{data set & data frame}
+\item{allptmtable.df}{A data frame containing numeric data.}
+
+\item{allptmtable}{A dataset for post-translational modifications.}
 }
 \value{
-TSNE coordinates
+A matrix containing t-SNE coordinates (3D).
 }
 \description{
-Finds the difference between Euclidean Distance and Spearman Dissimilarity
+This function uses parallel computing to calculate both Spearman dissimilarity and
+Euclidean distance, combines them, and performs t-SNE.
 }
 \examples{
 CombinedPar(allptmtable.df, allptmtable)

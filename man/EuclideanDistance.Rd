@@ -2,19 +2,20 @@
 % Please edit documentation in R/KeyFunctions.R
 \name{EuclideanDistance}
 \alias{EuclideanDistance}
-\title{Calculates Euclidean Distance between}
+\title{Calculates Euclidean distance and performs t-SNE}
 \usage{
 EuclideanDistance(allptmtable.df)
 }
 \arguments{
-\item{Post}{translation modification data frame}
+\item{allptmtable.df}{A data frame containing numeric data for post-translational modifications.}
 }
 \value{
-TSNE Euclidean Distance
+A matrix containing t-SNE coordinates (3D).
 }
 \description{
-Calculates Euclidean Distance between
+This function computes the Euclidean distance matrix from the input dataset,
+normalizes it, and applies t-SNE for dimensionality reduction.
 }
 \examples{
-(EuclideanDistance(allptmtable.df)
+EuclideanDistance(allptmtable.df)
 }

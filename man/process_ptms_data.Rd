@@ -2,13 +2,23 @@
 % Please edit documentation in R/KeyFunctions.R
 \name{process_ptms_data}
 \alias{process_ptms_data}
-\title{Title}
+\title{Process PTMs Data}
 \usage{
 process_ptms_data(eu.sp.sed.allptms, sed.allptms.peps, AlldataPTMs_cor)
 }
 \arguments{
-\item{AlldataPTMs_cor}{}
+\item{eu.sp.sed.allptms}{A list of all PTMs.}
+
+\item{sed.allptms.peps}{A list of SED PTMs peptides.}
+
+\item{AlldataPTMs_cor}{A correlation matrix for all PTMs.}
+}
+\value{
+A data frame containing PTMs gene correlation edges.
 }
 \description{
-Title
+This function processes PTMs data, creates correlation networks, and constructs adjacency matrices.
+}
+\examples{
+process_ptms_data(eu.sp.sed.allptms, sed.allptms.peps, AlldataPTMs_cor)
 }

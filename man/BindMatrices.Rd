@@ -2,13 +2,21 @@
 % Please edit documentation in R/KeyFunctions.R
 \name{BindMatrices}
 \alias{BindMatrices}
-\title{Function to bind matrices and return the necessary outputs}
+\title{Bind Matrices}
 \usage{
 BindMatrices(cluster_list, correlation_matrix)
 }
 \arguments{
-\item{correlation_matrix}{}
+\item{cluster_list}{A list of clusters to generate adjacency matrices.}
+
+\item{correlation_matrix}{A correlation matrix to align with the adjacency matrix.}
+}
+\value{
+A list containing the combined adjacency matrix and CCCN matrix.
 }
 \description{
-Function to bind matrices and return the necessary outputs
+This function binds matrices, aligns them, and prepares adjacency and CCCN matrices.
+}
+\examples{
+BindMatrices(cluster_list, correlation_matrix)
 }

@@ -2,16 +2,24 @@
 % Please edit documentation in R/KeyFunctions.R
 \name{MakeClusterList}
 \alias{MakeClusterList}
-\title{Makes a list of cluster groupings}
+\title{Creates a list of cluster groupings based on t-SNE data}
 \usage{
 MakeClusterList(tsnedata, toolong, tbl.sc)
 }
 \arguments{
-\item{TSNE}{Data, Cluster Distance Number, TBD}
+\item{tsnedata}{A matrix containing t-SNE coordinates.}
+
+\item{toolong}{A numeric threshold for cluster separation.}
+
+\item{tbl.sc}{A data frame associated with the t-SNE data.}
 }
 \value{
-TSNE list (filtered)
+A list of clusters grouped by proximity.
 }
 \description{
-Makes a list of cluster groupings
+This function groups t-SNE data points into clusters using a specified threshold
+and visualizes the clusters.
+}
+\examples{
+MakeClusterList(tsnedata, 3.5, tbl.sc)
 }

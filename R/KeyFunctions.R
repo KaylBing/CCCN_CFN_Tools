@@ -388,16 +388,18 @@ MakeAdjMatrix <- function(list.element) {
   colnames(list.el.mat) <- list.element
   return(list.el.mat)
 }
-
-#' Function to bind matrices and return the necessary outputs
+#' Bind Matrices
 #'
-#' @param cluster_list
-#' @param correlation_matrix
+#' This function binds matrices, aligns them, and prepares adjacency and CCCN matrices.
 #'
-#' @return
+#' @param cluster_list A list of clusters to generate adjacency matrices.
+#' @param correlation_matrix A correlation matrix to align with the adjacency matrix.
+#'
+#' @return A list containing the combined adjacency matrix and CCCN matrix.
 #' @export
 #'
 #' @examples
+#' BindMatrices(cluster_list, correlation_matrix)
 BindMatrices <- function(cluster_list, correlation_matrix) {
   # Generate the combined adjacency matrix
   adj_matrix <- rbind.fill.matrix(llply(cluster_list, MakeAdjMatrix))
@@ -423,15 +425,17 @@ BindMatrices <- function(cluster_list, correlation_matrix) {
   # Return the adjacency and CCCN matrices as a list
   return(list(adj_matrix = adj_matrix_ordered, cccn_matrix = cccn_matrix))
 }
-
-#' Function to create a correlation network
+#' Generate Correlation Network
 #'
-#' @param bind_result
+#' This function creates a correlation network graph from a given set of matrices.
 #'
-#' @return
+#' @param bind_result A list containing the adjacency and CCCN matrices from `BindMatrices`.
+#'
+#' @return An igraph object representing the correlation network.
 #' @export
 #'
 #' @examples
+#' CorrelationNetwork(bind_result)
 CorrelationNetwork <- function(bind_result) {
   adj_matrix <- bind_result$adj_matrix
   cccn_matrix <- bind_result$cccn_matrix
@@ -445,6 +449,17 @@ CorrelationNetwork <- function(bind_result) {
   return(graph)
 }
 
+#' Replace Zeros with NA
+#'
+#' This function replaces all zeros in a data frame with NA values.
+#'
+#' @param df A data frame where zeros are to be replaced with NA.
+#'
+#' @return A data frame with zeros replaced by NA.
+#' @export
+#'
+#' @examples
+#' zero.to.NA(data.frame(a = c(0, 1), b = c(2, 0)))
 zero.to.NA <- function(df) {
   cf <- df
   zer0 <- which(cf==0, arr.ind = TRUE)
@@ -454,16 +469,19 @@ zero.to.NA <- function(df) {
   return(cfNA)
 }
 
-#' Title
+#' Process PTMs Data
 #'
-#' @param eu.sp.sed.allptms
-#' @param sed.allptms.peps
-#' @param AlldataPTMs_cor
+#' This function processes PTMs data, creates correlation networks, and constructs adjacency matrices.
 #'
-#' @return
+#' @param eu.sp.sed.allptms A list of all PTMs.
+#' @param sed.allptms.peps A list of SED PTMs peptides.
+#' @param AlldataPTMs_cor A correlation matrix for all PTMs.
+#'
+#' @return A data frame containing PTMs gene correlation edges.
 #' @export
 #'
 #' @examples
+#' process_ptms_data(eu.sp.sed.allptms, sed.allptms.peps, AlldataPTMs_cor)
 process_ptms_data <- function(eu.sp.sed.allptms, sed.allptms.peps, AlldataPTMs_cor) {
   # Set variables
   eu_sp_sed_allptms <- list.common(eu.sp.sed.allptms, sed.allptms.peps, keeplength = 2)
@@ -527,7 +545,18 @@ process_ptms_data <- function(eu.sp.sed.allptms, sed.allptms.peps, AlldataPTMs_c
   return(allptms_gene_cccn_edges)
 }
 
-
+#' Extract Gene Names from Peptide Vector
+#'
+#' This function extracts gene names from a given peptide vector.
+#'
+#' @param pepvec A vector of peptides.
+#' @param pepsep A string specifying the separator for peptides. Default is "; ".
+#'
+#' @return A vector of unique gene names.
+#' @export
+#'
+#' @examples
+#' get.gene.names.from.peps(c("gene1 peptide1", "gene2 peptide2"))
 get.gene.names.from.peps <- function(pepvec, pepsep="; ") {
   genevec=NULL
   for(i in 1:length(pepvec)) {
@@ -538,6 +567,19 @@ get.gene.names.from.peps <- function(pepvec, pepsep="; ") {
   return(genevec)
 }
 
+#' Find PPI Edges
+#'
+#' This function finds protein-protein interaction edges by combining input datasets with STRING and GeneMANIA databases.
+#'
+#' @param input_dataset The input dataset containing experimental data.
+#' @param gmfilename The filename of the GeneMANIA data.
+#' @param nodenames A vector of node names.
+#'
+#' @return A data frame of combined edges from STRINGdb and GeneMANIA.
+#' @export
+#'
+#' @examples
+#' find_ppi_edges("input_data.txt", "gmfilename.txt", nodenames)
 find_ppi_edges <- function(input_dataset, gmfilename, nodenames) {
   # Load PPI edges from other databases
   load("PPIEdges.RData")
@@ -605,6 +647,17 @@ pepgene <- function(peps) {
   unique(sapply(peps, function(x) unlist(strsplit(x, " ", fixed=TRUE))[1]))
 }
 
+#' Extract Gene Names from Peptide Edge File
+#'
+#' This function extracts unique gene names from a peptide edge file.
+#'
+#' @param peptide.edgefile A data frame containing peptide edge information.
+#'
+#' @return A vector of unique gene names.
+#' @export
+#'
+#' @examples
+#' extract.gene.names(peptide.edgefile)
 # Function to extract gene names from peptide edge file
 extract.gene.names <- function(peptide.edgefile) {
   peps <- c(peptide.edgefile[,1], peptide.edgefile[,2])
@@ -612,7 +665,18 @@ extract.gene.names <- function(peptide.edgefile) {
   return(genes)
 }
 
-# Function to create peptide edges
+#' Create Gene-Peptide Edges
+#'
+#' This function creates peptide edges for a given node list.
+#'
+#' @param nodelist A vector of node names.
+#' @param pepkey A data frame containing peptide keys.
+#'
+#' @return A data frame of peptide edges with weights and edge types.
+#' @export
+#'
+#' @examples
+#' genepep.edges.3(nodelist, pepkey)
 genepep.edges.3 <- function(nodelist, pepkey=ld.key) {
   nodelist <- unique(nodelist)
   gpedges <- pepkey[pepkey$Gene.Name %in% nodelist, 1:2]
@@ -624,6 +688,18 @@ genepep.edges.3 <- function(nodelist, pepkey=ld.key) {
   return(unique(gpedges))
 }
 
+#' Process Correlation Edges
+#'
+#' This function processes correlation edges from a given correlation matrix.
+#'
+#' @param cor_matrix A correlation matrix.
+#' @param mode A string specifying the graph mode. Default is "lower".
+#'
+#' @return A data frame of correlation edges.
+#' @export
+#'
+#' @examples
+#' process_correlation_edges(cor_matrix)
 # Function to process correlation edges
 process_correlation_edges <- function(cor_matrix, mode="lower") {
   g <- graph_from_adjacency_matrix(as.matrix(cor_matrix), mode=mode, diag=FALSE, weighted="Weight")

@@ -2,7 +2,7 @@
 % Please edit documentation in R/KeyFunctions.R
 \name{FindCommonCluster}
 \alias{FindCommonCluster}
-\title{Finds correlations between clusters}
+\title{Finds correlations between clusters from multiple distance metrics}
 \usage{
 FindCommonCluster(
   eu_allptms_tsne,
@@ -13,11 +13,23 @@ FindCommonCluster(
 )
 }
 \arguments{
-\item{output_dir}{}
+\item{eu_allptms_tsne}{A matrix containing Euclidean t-SNE coordinates.}
+
+\item{sp_allptms_tsne}{A matrix containing Spearman t-SNE coordinates.}
+
+\item{sed_allptms_tsne}{A matrix containing combined t-SNE coordinates.}
+
+\item{allptmtable_df}{A data frame containing input data for cluster analysis.}
+
+\item{output_dir}{The directory where output plots are saved. Defaults to "plots".}
 }
 \value{
-list(eu_allptms_list = eu_allptms_list, sp_allptms_list = sp_allptms_list, sed_allptms_list = sed_allptms_list
+A list containing cluster groupings for each distance metric.
 }
 \description{
-Finds correlations between clusters
+This function identifies and analyzes clusters using Spearman, Euclidean, and combined
+t-SNE data, generates cluster size histograms, and saves the plots.
+}
+\examples{
+FindCommonCluster(eu_allptms_tsne, sp_allptms_tsne, sed_allptms_tsne, allptmtable_df, "output")
 }
