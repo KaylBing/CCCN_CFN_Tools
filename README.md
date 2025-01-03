@@ -8,9 +8,13 @@ Before proceeding, ensure you have R and RStudio installed. You will also need t
 
 install.packages("devtools")
 
-Once devtools is installed, you can install this package directly from GitHub using:
+Additionally, please check that you have R version 4.4, and STRINGdb installed before moving forward.
 
-devtools::install_github("https://github.com/KaylBing/CCCN_CFN_Tools")
+conda install bioconda::bioconductor-stringdb
+
+Once these are both installed, you can install this package directly from GitHub using:
+
+devtools::install_github("KaylBing/CCCN_CFN_Tools")
 
 ## Usage
 
