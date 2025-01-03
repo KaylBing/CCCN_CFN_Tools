@@ -20,7 +20,7 @@ devtools::install_github("KaylBing/CCCN_CFN_Tools")
 
 After installation, load the package in R with:
 
-library(CCCN_CFN_Tools)
+library(cccn.cnf.tools)
 
 You can then use the available functions as described in the package documentation.
 
