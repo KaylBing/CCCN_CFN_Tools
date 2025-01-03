@@ -10,7 +10,7 @@ install.packages("devtools")
 
 Once devtools is installed, you can install this package directly from GitHub using:
 
-devtools::install_github("your_github_username/repository_name")
+devtools::install_github("https://github.com/KaylBing/CCCN_CFN_Tools")
 
 ## Usage
 
