@@ -1,19 +1,36 @@
-This is the supporting package for the projects in the papers listed below. 
+This is the supporting package for the projects in the papers listed below.
 
 Please feel free to reach out with errors, critiques, or questions.
 
-Before the proper setup begins, it is assumed that you have conda installed and have run
-conda init and restarted your shell. If you would like more information on this process
-the link below is the official guide.
+## Installation
 
--
+Before proceeding, ensure you have R and RStudio installed. You will also need the devtools package, which can be installed with:
 
-After this, open a blank shell and navigate to wherever you would like our code to be installed. Then use curl or git to pull our code. 
+install.packages("devtools")
 
-git clone linkname.git
+Once devtools is installed, you can install this package directly from GitHub using:
 
-Then you will need to use the afformentioned conda commands to build an enviroment file based on ours. 
+devtools::install_github("your_github_username/repository_name")
 
-conda env create --name envname --file=env.yml
+## Usage
 
-Make sure to run this in the same directory as the yml file. This may take a while. 
+After installation, load the package in R with:
+
+library(packageName)
+
+You can then use the available functions as described in the package documentation.
+
+## Development & Contribution
+
+If you wish to modify or contribute to the package, clone the repository locally using:
+
+git clone https://github.com/your_github_username/repository_name.git
+
+Then, in R, navigate to the package directory and use devtools to load the package for development:
+
+devtools::load_all()
+
+To check for issues before committing changes, run:
+
+devtools::check()
+
