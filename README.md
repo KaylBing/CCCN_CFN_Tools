@@ -28,7 +28,7 @@ You can then use the available functions as described in the package documentati
 
 If you wish to modify or contribute to the package, clone the repository locally using:
 
-git clone https://github.com/your_github_username/repository_name.git
+git clone https://github.com/KaylBing/CCCN_CFN_Tools.git
 
 Then, in R, navigate to the package directory and use devtools to load the package for development:
 
